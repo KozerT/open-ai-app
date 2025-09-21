@@ -13,18 +13,18 @@ console.log("🤖 AI Bot ");
 console.log("💡 Type 'exit' or 'quit' to end chat\n");
 
 while (true) {
-    const userMessage = await rl.question("You: ");
+  const userMessage = await rl.question("You: ");
 
-    if (
-        userMessage.toLowerCase() === "exit" ||
-        userMessage.toLowerCase() === "quit"
-    ) {
-        console.log("\n🤖 Thanks for chatting! Bye!");
-        break;
-    }
+  if (
+    userMessage.toLowerCase() === "exit" ||
+    userMessage.toLowerCase() === "quit"
+  ) {
+    console.log("\n🤖 Thanks for chatting! Bye!");
+    break;
+  }
 
-    conversationHistory += `User: ${userMessage}\n`;
-    const prompt = conversationHistory + "Assistant: ";
+  conversationHistory += `User: ${userMessage}\n`;
+  const prompt = conversationHistory + "Assistant: ";
 
-    console.log("\n🤖 AI:");
+  console.log("\n🤖 AI:");
 }
