@@ -32,7 +32,6 @@ function loadKB(): Omit<DocumentChank, "embadding">[] {
 
 // The next step would be to iterate over every single file, get the data from the file, split it into
 // chunks and add to this array of documents, and then return that.
-
     for (const file of files) {
       const content = readFileSync(join(kbDir, file), "utf8");
         //we need to spit into perfect chank of content 
@@ -69,13 +68,37 @@ function loadKB(): Omit<DocumentChank, "embadding">[] {
 
 }
 
+async function createEmbeddings(texts: string[]): Promise<number[][]> {
+    const reponse = await openai.embeddings.create({
+        model: "text-embedding-3-small",
+        input: texts,
+    });
+    return reponse.data.map((item) => item.embedding);
+}
+
+
+async function initKB(): Promise<void> {
+    console.log("Loading knowladge base...")
+    const docs = loadKB();
+
+    const texts = docs.map((doc) => doc.content);
+    const embeddings = await createEmbeddings(texts);
+
+    knowladgeBase = docs.map((doc, index) => ({
+        ...doc,
+        embadding: embeddings[index]!   
+    }))
+       console.log(`✅ Knowladge bases ready with ${knowladgeBase.length} documents \n`)
+}
+
+
 let conversationHistory =
   "You are an AI assistant. Be friendly, concise and remember what user tells you throghout our chat.\n\n";
 
 console.log("🤖 AI Bot ");
 console.log("💡 Type 'exit' or 'quit' to end chat\n");
 
-loadKB();
+initKB();
 
 while (true) {
     const userMessage = await rl.question("You: ");
